@@ -1,4 +1,5 @@
 Finish adding access to the prime running function functionality from the
 command line tool.
 
+Modify runningSum so it takes in array of values
 Start collecting data!
