@@ -42,6 +42,20 @@ class PrimeFunctions:
             output.append(sum)
         return output
 
+    def runningSum(self, a, q, n):
+        """Returns the prime running function evaluated at n."""
+        if n > self.maxValue:
+            raise RuntimeError("Number too large")
+        sum = 0
+        r = self.primes[0]
+        for p in self.primes[1:]:
+            if p > n:
+                sum += (n - r) * self.walkingStep(a, q, r)
+                return sum
+            sum += self.walkingStep(a, q, r) * (p - r)
+            r = p
+        return sum + (n - r) * self.walkingStep(a, q, r)
+
     def runningSumPrimes(self, a, q):
         """Returns the output values of the prime running function at prime
         coordinates (i.e., the jth entry in the output array corresponds to the

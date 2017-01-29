@@ -39,10 +39,11 @@ def main(argv):
                             help=('file to output data to'),
                             required=True)
     action_run.add_argument('-b', type=int, help='consider the residue class of b')
-    action_run.add_argument('-a', action='store_true',
+    action_run.add_argument('-m', type=type(""),
                             help=('consider all residue classes mod q; if '
                                   'specified, the b value is ignored'))
     action_run.add_argument('q', type=int, help='consider residue class mod q')
+    action_run.add_argument('-n', type=int, help='input to prime running function')
 
     args = parser.parse_args(argv[1:])
 
@@ -65,7 +66,7 @@ def main(argv):
     elif args.command == 'run':
         try:
             primeFunctions = primefunctions.PrimeFunctions(args.infile)
-            if args.a:
+            if args.m == "all":
                 yss = primeFunctions.runningSumPrimesAll(args.q)
                 with open(args.outfile, 'w') as out:
                     out.write('n value')
@@ -77,13 +78,20 @@ def main(argv):
                         for j in range(len(yss)):
                             out.write(',' + str(yss[j][i]))
                         out.write('\n')
-            else:
+            elif args.m == "one":
                 ys = primeFunctions.runningSumPrimes(args.b, args.q)
                 out.write('n value,' + str(args.b) + ' mod ' + str(args.q) + '\n')
                 with open(args.outfile, "w") as out:
                     for i in range(len(ys)):
                         out.write(str(primeFunctions.primes[i]) + ',' + str(ys[i])
                                   + '\n')
+            else:
+                for i in range(50):
+                    with open('mod' + str(i) + '.txt', 'w') as out:
+                        q = primeFunctions.primes[i]
+                        for j in range(1, q):
+                            n = primeFunctions.runningSum(j, q, args.n)
+                            out.write(str(j) + ': ' + str(n) + '\n')
         except RuntimeError as e:
             print("Error: " + str(e))
             return 1
